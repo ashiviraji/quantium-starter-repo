@@ -6,11 +6,12 @@ import plotly.express as px
 # Load data
 df = pd.read_csv("data/processed_pink_morsel_sales.csv")
 
-# Convert date
-df['Date'] = pd.to_datetime(df['Date'])
+# Clean / format columns
+df["Date"] = pd.to_datetime(df["Date"])
+df["Region"] = df["Region"].str.lower()
 
 # Sort by date
-df = df.sort_values('Date')
+df = df.sort_values("Date")
 
 app = dash.Dash(__name__)
 
@@ -18,6 +19,7 @@ app.layout = html.Div([
 
     html.H1(
         "Pink Morsels Sales Dashboard",
+        id="header-title",
         style={'textAlign': 'center'}
     ),
 
@@ -44,7 +46,6 @@ app.layout = html.Div([
     Output('sales-chart', 'figure'),
     Input('region-filter', 'value')
 )
-
 def update_chart(selected_region):
 
     if selected_region == 'all':
@@ -56,7 +57,8 @@ def update_chart(selected_region):
         filtered_df,
         x='Date',
         y='Sales',
-        title='Pink Morsels Sales Over Time'
+        title='Pink Morsels Sales Over Time',
+        labels={"Date": "Date", "Sales": "Sales"}
     )
 
     return fig
